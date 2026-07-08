@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice of Bharat - Multilingual Citizen & MP Portal</title>
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Glowing Orbs for Premium Aesthetics -->
+  <div class="glowing-bg">
+    <div class="glow-orb orb-saffron"></div>
+    <div class="glow-orb orb-blue"></div>
+    <div class="glow-orb orb-green"></div>
+  </div>
+
+  <!-- ====================================================
+       1. LANDING SCREEN
+       ==================================================== -->
+  <div id="landing-screen" class="app-screen active">
+    <div class="landing-container">
+      <div class="logo-animation">
+        <div class="logo-circle">
+          <div class="logo-inner">
+            <span>VoB</span>
+          </div>
+        </div>
+        <div class="ashoka-spokes"></div>
+      </div>
+      
+      <h1 class="landing-title">Voice of Bharat</h1>
+      <p class="landing-subtitle">Democratizing constituency development by connecting direct citizen feedback with AI-prioritized planning.</p>
+
+      <div class="portal-selector">
+        <!-- Citizen Access -->
+        <div class="portal-card citizen-portal" id="portal-citizen">
+          <span class="portal-icon">🗳️</span>
+          <h3>Citizen Portal</h3>
+          <p>Submit development requests via Voice, Text, or Photos in your native language, and track progress directly.</p>
+        </div>
+
+        <!-- MP Access -->
+        <div class="portal-card mp-portal" id="portal-mp">
+          <span class="portal-icon">🛡️</span>
+          <h3>MP Workspace</h3>
+          <p>Analyze constituency hotspots on interactive maps, review AI-prioritized proposals, and manage project statuses.</p>
+        </div>
+      </div>
+      
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2rem;">
+        Powered by Advanced NLP & Infrastructure Gap Intelligence
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ====================================================
+       2. CITIZEN PORTAL SCREEN
+       ==================================================== -->
+  <div id="citizen-screen" class="app-screen">
+    <!-- Header -->
+    <header class="header-nav">
+      <div class="nav-brand" id="c-brand-nav">
+        <div class="nav-logo">
+          <span>VoB</span>
+        </div>
+        <span class="nav-brand-title" id="c-nav-title">Voice of Bharat</span>
+      </div>
+      <div class="nav-actions">
+        <!-- Language Switcher -->
+        <div class="language-selector-container">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="hi">हिंदी</button>
+          <button class="lang-btn" data-lang="ta">தமிழ்</button>
+          <button class="lang-btn" data-lang="ml">മലയാളം</button>
+          <button class="lang-btn" data-lang="kn">ಕನ್ನಡ</button>
+        </div>
+        <button class="back-home-btn" id="c-back-btn">← Exit</button>
+      </div>
+    </header>
+
+    <div class="citizen-content-container">
+      <!-- Tabs Selector -->
+      <div class="citizen-tabs">
+        <button class="citizen-tab-btn active" id="tab-btn-submit" onclick="switchCitizenTab('submit')">Submit Suggestion</button>
+        <button class="citizen-tab-btn" id="tab-btn-track" onclick="switchCitizenTab('track')">Track Status</button>
+      </div>
+
+      <!-- PANEL A: Submit suggestion -->
+      <div class="citizen-panel active form-panel" id="citizen-submit-panel">
+        
+        <!-- Left: Form Card -->
+        <div id="form-card-container">
+          <div class="glass-card">
+            <h2 style="display: flex; justify-content: space-between; align-items: center;">
+              <span>🗳️ Log Development Request</span>
+            </h2>
+            
+            <!-- Multi-tab mode input selector -->
+            <div class="input-mode-tabs">
+              <button class="mode-tab-btn active" id="mode-btn-voice" onclick="switchInputMode('voice')">🎙️ Voice</button>
+              <button class="mode-tab-btn" id="mode-btn-text" onclick="switchInputMode('text')">📝 Text</button>
+              <button class="mode-tab-btn" id="mode-btn-photo" onclick="switchInputMode('photo')">📷 Photo</button>
+            </div>
+
+            <!-- Mode Voice Body -->
+            <div class="mode-container active" id="mode-container-voice">
+              <div class="voice-recorder-widget">
+                <div class="record-btn-container">
+                  <button class="record-btn" id="btn-voice-record" onclick="toggleVoiceRecording()">🎙️</button>
+                  <div class="audio-pulse-ring"></div>
+                </div>
+                <p id="voice-record-status-label" style="font-size: 0.85rem; color: var(--text-secondary); text-align: center;">Click to record suggestion</p>
+                <canvas id="audio-visualizer" class="audio-visualizer-canvas" width="300" height="60"></canvas>
+                <div id="voice-transcription-preview" class="transcription-preview" style="display: none;"></div>
+              </div>
+            </div>
+
+            <!-- Mode Text Body -->
+            <div class="mode-container" id="mode-container-text">
+              <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: center;">Write details directly into the suggestion text box below.</p>
+            </div>
+
+            <!-- Mode Photo Body -->
+            <div class="mode-container" id="mode-container-photo">
+              <div class="photo-upload-widget" id="photo-upload-container" onclick="triggerPhotoUpload()">
+                <span class="photo-upload-icon">📤</span>
+                <span class="photo-upload-text" id="photo-upload-text-lbl">Drag & drop / click to attach photo of infrastructure gap</span>
+                <img id="photo-preview" class="photo-preview-img" src="" alt="preview"/>
+              </div>
+              <input type="file" id="citizen-photo-file-input" accept="image/*" style="display:none" onchange="handlePhotoFileSelected(event)">
+            </div>
+
+            <!-- Fields -->
+            <div class="form-group" style="margin-top: 1.5rem;">
+              <label id="lbl-fullname" for="input-fullname">Full Name (Optional)</label>
+              <input type="text" class="form-control" id="input-fullname" placeholder="Enter your name">
+            </div>
+
+            <div class="form-group">
+              <label id="lbl-category" for="select-category">Category</label>
+              <select class="form-control" id="select-category">
+                <option value="Education">Education</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Water & Sanitation">Water & Sanitation</option>
+                <option value="Transport">Transport</option>
+                <option value="Agriculture">Agriculture</option>
+                <option value="Employment">Employment</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label id="lbl-location" for="select-village">Your Location / Village</label>
+              <select class="form-control" id="select-village" style="margin-bottom: 0.5rem;">
+                <option value="" disabled selected>Choose Village...</option>
+                <option value="Rampur">Rampur</option>
+                <option value="Kallupatti">Kallupatti</option>
+                <option value="Mararikulam">Mararikulam</option>
+                <option value="Devanahalli Rural">Devanahalli Rural</option>
+                <option value="Sukhdev Nagar">Sukhdev Nagar</option>
+                <option value="Vellore Outer">Vellore Outer</option>
+                <option value="Gandhi Gram">Gandhi Gram</option>
+                <option value="Bhagatpura">Bhagatpura</option>
+                <option value="Palani Hills">Palani Hills</option>
+                <option value="Chinnakuppam">Chinnakuppam</option>
+              </select>
+              
+              <!-- Simple Interactive Map Picker inside Form -->
+              <div class="map-picker-container" id="citizen-mock-map">
+                <div class="mock-map-bg">
+                  <div class="map-grid-overlay"></div>
+                  <!-- Placed pins -->
+                  <div id="citizen-map-pins"></div>
+                </div>
+                <div class="map-picker-help">Pin point location on grid Map</div>
+              </div>
+            </div>
+
+            <div class="form-group" id="suggestion-text-group" style="display: none;">
+              <label id="lbl-suggestion" for="input-suggestion-text">Describe Suggestion</label>
+              <textarea class="form-control" id="input-suggestion-text" placeholder="Write description..."></textarea>
+            </div>
+
+            <button class="btn-submit" id="btn-submit-feedback" onclick="handleFeedbackSubmit()">Submit Suggestion to MP</button>
+          </div>
+        </div>
+
+        <!-- Right: Localized Help Box Guidelines -->
+        <div class="glass-card help-box-card">
+          <h3 id="help-box-header">💡 How to submit?</h3>
+          <p id="help-box-desc" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.5;"></p>
+          
+          <div class="help-command-list">
+            <h4 id="help-prompt-label" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Suggested templates:</h4>
+            <div class="help-command-item">
+              <div class="help-command-label">Education (கல்வி / शिक्षा)</div>
+              <div class="help-command-text" id="help-voice-prompt">"There is no primary school..."</div>
+            </div>
+            <div class="help-command-item">
+              <div class="help-command-label">Water Supply (குடிநீர் / पेयजल)</div>
+              <div class="help-command-text">"Piped water is contaminated..."</div>
+            </div>
+          </div>
+
+          <div class="help-faqs">
+            <h4 style="font-size: 0.9rem; color: white; margin-bottom: 0.5rem; font-family: var(--font-display);">Frequently Asked Questions</h4>
+            <div class="faq-item">
+              <div class="faq-question" id="faq-q1">Who receives my request?</div>
+              <div class="faq-answer" id="faq-a1">Your MP receives it directly on their dashboard along with AI priority scores.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" id="faq-q2">How is priority determined?</div>
+              <div class="faq-answer" id="faq-a2">The AI model factors in feedback volume with school gaps and facility travel distance.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PANEL B: Track status -->
+      <div class="citizen-panel" id="citizen-track-panel">
+        <div class="status-tracker-container">
+          
+          <!-- Left: Recent List and Search -->
+          <div class="tracker-search-section">
+            <div class="glass-card" style="padding: 1.5rem;">
+              <h3 id="lbl-track-title" style="font-size: 1.1rem; margin-bottom: 0.75rem;">Track Your Complaint</h3>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" class="form-control" id="input-track-id" placeholder="Tracking ID (VOB-XXXX)" style="padding: 0.6rem 0.85rem; font-size: 0.85rem;">
+                <button class="btn-submit" id="btn-track-submit" style="width: auto; padding: 0.6rem 1.25rem; font-size: 0.85rem;" onclick="searchComplaintStatus()">Track</button>
+              </div>
+            </div>
+
+            <div class="glass-card" style="padding: 1.5rem; flex: 1;">
+              <h3 id="lbl-recent-subs" style="font-size: 1.1rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Your Recent Submissions</h3>
+              <div class="recent-submissions-list" id="recent-list-container">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Details Timeline -->
+          <div id="tracker-status-details" class="glass-card status-card-details">
+            <span style="font-size: 3.5rem; margin-bottom: 1.5rem;">🔍</span>
+            <p id="tracker-empty-msg">Select a submission from your list, or enter a Tracking ID to check status.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ====================================================
+       2b. MP LOGIN SCREEN
+       ==================================================== -->
+  <div id="mpLogin-screen" class="app-screen">
+    <div class="landing-container" style="max-width: 440px;">
+      <div class="logo-animation">
+        <div class="logo-circle">
+          <div class="logo-inner"><span>VoB</span></div>
+        </div>
+        <div class="ashoka-spokes"></div>
+      </div>
+
+      <h1 class="landing-title" style="font-size: 2.1rem;">MP Workspace Login</h1>
+      <p class="landing-subtitle">Sign in with your name and constituency to access the dashboard.</p>
+
+      <div class="glass-card" style="text-align: left; margin-top: 1rem;">
+        <div class="form-group">
+          <label for="mp-login-username">Username (your name)</label>
+          <input type="text" class="form-control" id="mp-login-username" placeholder="e.g. Arvind Menon" onkeydown="if(event.key === 'Enter') document.getElementById('mp-login-password').focus();">
+        </div>
+        <div class="form-group">
+          <label for="mp-login-password">Password (your constituency name)</label>
+          <input type="password" class="form-control" id="mp-login-password" placeholder="e.g. Bharat Constituency 4" onkeydown="if(event.key === 'Enter') handleMPLogin();">
+        </div>
+        <div id="mp-login-error" style="color:#ff8a8a; font-size:0.8rem; margin: -0.25rem 0 0.9rem; display:none;">
+          Incorrect username or password. Please try again.
+        </div>
+        <button class="btn-submit" onclick="handleMPLogin()">Sign In</button>
+        <p style="font-size:0.75rem; color: var(--text-muted); margin-top:1rem; text-align:center; line-height:1.5;">
+          Demo credentials — username: <strong style="color:var(--text-secondary);">Arvind Menon</strong>,
+          password: <strong style="color:var(--text-secondary);">Bharat Constituency 4</strong>
+        </p>
+      </div>
+
+      <button class="back-home-btn" style="margin-top: 1.5rem;" onclick="switchView('landing')">← Back</button>
+    </div>
+  </div>
+
+
+  <!-- ====================================================
+       3. MP DASHBOARD SCREEN
+       ==================================================== -->
+  <div id="mp-screen" class="app-screen">
+    <!-- Header -->
+    <header class="header-nav">
+      <div class="nav-brand" id="mp-brand-nav">
+        <div class="nav-logo" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));">
+          <span>VoB</span>
+        </div>
+        <span class="nav-brand-title">MP Dashboard <span style="font-size: 0.8rem; font-weight:normal; color:var(--text-secondary);">- Constituency Center</span></span>
+      </div>
+      <div class="nav-actions">
+        <span style="font-family: var(--font-display); font-size: 0.85rem; color: var(--text-secondary); background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding: 0.35rem 0.75rem; border-radius: 15px;" id="mp-nav-constituency">
+          📍 Bharat Constituency 4
+        </span>
+        <span style="font-family: var(--font-display); font-size: 0.85rem; color: var(--text-secondary);" id="mp-nav-name">Arvind Menon</span>
+        <button class="back-home-btn" id="mp-back-btn">← Logout</button>
+      </div>
+    </header>
+
+    <div class="mp-container">
+      
+      <!-- Metrics overview row -->
+      <div class="metrics-row">
+        <div class="metric-card" style="border-left: 3px solid var(--accent-blue);">
+          <div class="metric-label">Total Submissions</div>
+          <div class="metric-value" id="mp-metric-total">0</div>
+          <div class="metric-change positive">Citizen voices active</div>
+        </div>
+        <div class="metric-card" style="border-left: 3px solid var(--accent-saffron);">
+          <div class="metric-label">Review Pending</div>
+          <div class="metric-value" id="mp-metric-pending">0</div>
+          <div class="metric-change neutral">Awaiting MP action</div>
+        </div>
+        <div class="metric-card" style="border-left: 3px solid var(--accent-green);">
+          <div class="metric-label">Sanctioned Projects</div>
+          <div class="metric-value" id="mp-metric-sanctioned">0</div>
+          <div class="metric-change positive">Budget allocated</div>
+        </div>
+        <div class="metric-card" style="border-left: 3px solid #10b981;">
+          <div class="metric-label">Completed Works</div>
+          <div class="metric-value" id="mp-metric-completed">0</div>
+          <div class="metric-change positive">Delivered projects</div>
+        </div>
+      </div>
+
+      <!-- Main grids layout -->
+      <div class="dashboard-grid">
+        
+        <!-- Grid Left: Gap Analytics Map -->
+        <div class="glass-card map-card-wrapper" style="box-shadow: var(--glow-blue); border-color: rgba(59, 130, 246, 0.15);">
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>🗺️ Constituency Infrastructure Map</span>
+          </h2>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Cross-referencing citizen demand density with public datasets and travel distance gaps.</p>
+          
+          <div class="map-control-bar">
+            <button class="map-layer-btn active" data-layer="hotspots" onclick="selectMapLayer('hotspots')">Citizen Hotspots</button>
+            <button class="map-layer-btn" data-layer="schoolGaps" onclick="selectMapLayer('schoolGaps')">School Gaps</button>
+            <button class="map-layer-btn" data-layer="healthGaps" onclick="selectMapLayer('healthGaps')">Healthcare Gaps</button>
+            <button class="map-layer-btn" data-layer="waterIndex" onclick="selectMapLayer('waterIndex')">Water Stress</button>
+          </div>
+
+          <div class="map-svg-container" id="mp-district-map-container">
+            <!-- Dynamic interactive SVG loaded here -->
+          </div>
+          
+          <!-- Tooltip element -->
+          <div class="map-tooltip-overlay" id="map-tooltip"></div>
+        </div>
+
+        <!-- Grid Right: AI Engine Recommendation Priorities -->
+        <div class="glass-card ai-recommendation-card" style="box-shadow: var(--glow-saffron); border-color: rgba(255, 138, 61, 0.15);">
+          <div class="recom-list-header">
+            <div>
+              <h2 style="font-size: 1.25rem; margin-bottom: 0.25rem;">🤖 AI-Recommended Projects</h2>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">Consolidated suggestions ranked by urgency index (Gap + Volume + Vulnerability)</p>
+            </div>
+            <span style="font-size: 0.7rem; font-weight: bold; background: rgba(255,138,61,0.15); color: var(--accent-saffron); border: 1px solid var(--accent-saffron); padding: 0.25rem 0.5rem; border-radius: 4px;">RANKED BY AI</span>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="recom-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">Urgency</th>
+                  <th>Consolidated Development Project</th>
+                  <th>Location</th>
+                  <th style="text-align: center; width: 80px;">Demands</th>
+                </tr>
+              </thead>
+              <tbody id="ai-recom-table-body">
+                <!-- Dynamically populated recommendations rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Feed Section: Database list -->
+      <div id="mp-feed-section" class="glass-card feed-card">
+        <div class="feed-header-filters">
+          <div>
+            <h2 style="font-size: 1.3rem;">📑 Citizen Feed Ledger</h2>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">Review individual voices, translated voice files, and photos.</p>
+          </div>
+          
+          <div class="feed-header-filters">
+            <div class="feed-filters-left">
+              <!-- Category Filter -->
+              <select class="feed-filter-select" id="feed-filter-category" onchange="renderMPFeedList()">
+                <option value="all">All Categories</option>
+                <option value="Education">Education</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Water & Sanitation">Water & Sanitation</option>
+                <option value="Transport">Transport</option>
+                <option value="Agriculture">Agriculture</option>
+                <option value="Employment">Employment</option>
+              </select>
+
+              <!-- Location filter -->
+              <select class="feed-filter-select" id="feed-filter-village" onchange="renderMPFeedList()">
+                <option value="all">All Villages</option>
+                <option value="Rampur">Rampur</option>
+                <option value="Kallupatti">Kallupatti</option>
+                <option value="Mararikulam">Mararikulam</option>
+                <option value="Devanahalli Rural">Devanahalli Rural</option>
+                <option value="Sukhdev Nagar">Sukhdev Nagar</option>
+                <option value="Vellore Outer">Vellore Outer</option>
+                <option value="Gandhi Gram">Gandhi Gram</option>
+                <option value="Bhagatpura">Bhagatpura</option>
+                <option value="Palani Hills">Palani Hills</option>
+                <option value="Chinnakuppam">Chinnakuppam</option>
+              </select>
+
+              <!-- Status filter -->
+              <select class="feed-filter-select" id="feed-filter-status" onchange="renderMPFeedList()">
+                <option value="all">All Statuses</option>
+                <option value="Submitted">Submitted</option>
+                <option value="Under Review">Under Review</option>
+                <option value="Sanctioned">Sanctioned</option>
+                <option value="Work in Progress">Work in Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+            
+            <input type="text" class="feed-search-input" id="feed-search-bar" placeholder="Search keyword..." oninput="renderMPFeedList()"/>
+          </div>
+        </div>
+
+        <div class="feed-grid" id="mp-feed-grid-list">
+          <!-- Populated card slots -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ====================================================
+       4. DETAIL & RESPONSE MODAL
+       ==================================================== -->
+  <div id="mp-detail-modal" class="modal-overlay">
+    <div class="modal-container">
+      <button class="modal-close-btn" onclick="closeGrievanceDetailModal()">✕</button>
+      
+      <div class="modal-title-row">
+        <h3 id="modal-field-id">VOB-XXXX</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Constituency Development Grievance Detail</p>
+      </div>
+
+      <div class="modal-meta-grid">
+        <div class="modal-meta-item">
+          <span>Submitted By</span>
+          <span id="modal-field-name">John Doe</span>
+        </div>
+        <div class="modal-meta-item">
+          <span>Date Logged</span>
+          <span id="modal-field-date">Jan 1, 2026</span>
+        </div>
+        <div class="modal-meta-item">
+          <span>Location</span>
+          <span id="modal-field-location">Rampur</span>
+        </div>
+        <div class="modal-meta-item">
+          <span>Category</span>
+          <span id="modal-field-category">Healthcare</span>
+        </div>
+      </div>
+
+      <!-- Attachment - Audio -->
+      <div class="modal-section" id="modal-audio-block" style="display: none;">
+        <div class="modal-section-title">🎙️ Audio Recording Attachment</div>
+        <div class="audio-player-mock">
+          <span class="audio-play-icon">▶</span>
+          <div class="audio-slider-mock">
+            <div class="audio-slider-progress"></div>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">0:24</span>
+        </div>
+      </div>
+
+      <!-- Attachment - Photo -->
+      <div class="modal-section" id="modal-photo-block" style="display: none;">
+        <div class="modal-section-title">📸 Photo Attachment</div>
+        <img id="modal-photo-preview" class="modal-photo-preview" src="" alt="attachment"/>
+      </div>
+
+      <!-- Content -->
+      <div class="modal-section">
+        <div class="modal-section-title">Original Message (<span id="modal-field-original-lang">HI</span>)</div>
+        <div class="modal-transcription" id="modal-field-original-text">
+          - original language content text -
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">AI Translation & Core Request</div>
+        <div class="modal-translation" id="modal-field-translation-text">
+          - English translated statement -
+        </div>
+      </div>
+
+      <!-- Action Panel Form -->
+      <div class="response-actions-form">
+        <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; font-family: var(--font-display); color: white;">Update Grievance & Send Response</h4>
+        
+        <div class="response-grid">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="modal-action-status" style="font-size: 0.8rem; margin-bottom: 0.25rem;">Action Status</label>
+            <select class="form-control" id="modal-action-status" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+              <option value="Submitted">Submitted</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Sanctioned">Sanctioned</option>
+              <option value="Work in Progress">Work in Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 0; display:flex; align-items:flex-end;">
+            <button class="btn-update" onclick="submitMPResponse()">Save Changes</button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1rem; margin-bottom: 0;">
+          <label for="modal-action-note" style="font-size: 0.8rem; margin-bottom: 0.25rem;">MP's Note / Response to Citizen (Automatically translated to their language)</label>
+          <textarea class="form-control" id="modal-action-note" placeholder="Write response note to citizen (e.g. 'Project approved, funds allocated.')" style="min-height: 80px; padding: 0.5rem 0.75rem; font-size: 0.85rem;"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="mock_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
